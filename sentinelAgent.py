@@ -2,9 +2,11 @@
 
 import os, subprocess, psutil, socket, platform, json, logging, datetime
 
+if not os.path.exists("./reports"):
+    os.makedirs("./reports")
 
 logging.basicConfig(
-    filename="./sentinel_init.log",
+    filename="./reports/sentinel_init.log",
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(name)s - %(message)s"
 )
@@ -28,8 +30,13 @@ def main():
     except:
         logging.warning("Error in getting memory informations")
 
-    print("IP Address : ", socket.gethostbyname(socket.gethostname()))
-    print("Network interfaces : ", psutil.net_if_addrs().keys())
+    try:
+        logging.info("Get network informations")
+        ip_address = socket.gethostbyname(socket.gethostname())
+        interfaces = list(psutil.net_if_addrs().keys())
+    except:
+        logging.warning("Error in getting network informations")
+
     # print("Open ports : ", subprocess.getoutput("ss -tulnp"))
 
     print("Process Number : ", len(psutil.pids()))
@@ -37,17 +44,25 @@ def main():
 
     logging.info("End audit")
 
+    
     report_data = {
-        "hostname": hostname,
-        "os_name": os_name,
-        "os_version": os_version,
-        "cpu_usage": cpu_usage,
-        "ram_usage": ram_usage,
-        "disk_usage": disk_usage,
-        "timestamp": datetime.datetime.now().isoformat()
+        "system" : {
+            "hostname"   : hostname,
+            "os_name"    : os_name,
+            "os_version" : os_version,
+        },
+        "memory" : {
+            "cpu_usage"  : cpu_usage,
+            "ram_usage"  : ram_usage,
+            "disk_usage" : disk_usage,
+        },
+        "network" : {
+            "ip_address" : ip_address,
+            "interfaces" : interfaces,
+        },
     }
 
-    with open("sentinel_report.json", "w") as report_file:
+    with open("reports/sentinel_report.json", "w", encoding='utf-8') as report_file:
         json.dump(report_data, report_file, indent=4)   
 
     markdown_content = f"""# Rapport Sentinel de Surveillance
@@ -63,7 +78,7 @@ def main():
     - **Généré le** : {datetime.datetime.now().isoformat()}
     """
     
-    with open(" sentinel_report.md", "w") as md_file:
+    with open("reports/sentinel_report.md", "w", encoding='utf-8') as md_file:
         md_file.write(markdown_content)
     
 
