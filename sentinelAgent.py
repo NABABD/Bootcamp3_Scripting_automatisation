@@ -5,7 +5,8 @@ import os, subprocess, psutil, socket, platform, json, logging, datetime
 
 logging.basicConfig(
     filename="./sentinel_init.log",
-    level=logging.INFO
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(name)s - %(message)s"
 )
 
 def main():
@@ -19,9 +20,13 @@ def main():
     except:
         logging.warning("Error in getting system infomations")
 
-    print("CPU usage : ", psutil.cpu_percent(), "%")
-    print("RAM usage : ", psutil.virtual_memory().percent, "%")
-    print("Disk usage : ", psutil.disk_usage("/").percent, "%")
+    try:
+        logging.info("Get memory informations")
+        cpu_usage = psutil.cpu_percent()
+        ram_usage = psutil.virtual_memory().percent
+        disk_usage = psutil.disk_usage("/").percent
+    except:
+        logging.warning("Error in getting memory informations")
 
     print("IP Address : ", socket.gethostbyname(socket.gethostname()))
     print("Network interfaces : ", psutil.net_if_addrs().keys())
