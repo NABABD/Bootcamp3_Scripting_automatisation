@@ -1,10 +1,17 @@
 #!/usr/bin/python3
 
 import os, subprocess, psutil, socket, platform, json, logging, datetime
+from pathlib import Path
 
+REPORT_DIR = "reports"
+LOG_FILE_NAME = "sentinel_init.log"
+if not os.path.exists(REPORT_DIR):
+    os.makedirs(REPORT_DIR)
 
+LOG_PATH = Path(REPORT_DIR) / LOG_FILE_NAME
 logging.basicConfig(
-    filename="./sentinel_init.log",
+    filename=LOG_PATH,
+    #filename="./sentinel_init.log",
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(name)s - %(message)s"
 )
@@ -37,6 +44,8 @@ def main():
 
     logging.info("End audit")
 
+    json_path = Path(REPORT_DIR) / "sentinel_report.json"
+    md_path = Path(REPORT_DIR) / "sentinel_report.md"
     report_data = {
         "hostname": hostname,
         "os_name": os_name,
@@ -47,7 +56,7 @@ def main():
         "timestamp": datetime.datetime.now().isoformat()
     }
 
-    with open("sentinel_report.json", "w") as report_file:
+    with open(json_path, "w") as report_file:
         json.dump(report_data, report_file, indent=4)   
 
     markdown_content = f"""# Rapport Sentinel de Surveillance
@@ -62,8 +71,8 @@ def main():
     ## Horodatage   
     - **Généré le** : {datetime.datetime.now().isoformat()}
     """
-    
-    with open(" sentinel_report.md", "w") as md_file:
+
+    with open(md_path, "w") as md_file:
         md_file.write(markdown_content)
     
 
