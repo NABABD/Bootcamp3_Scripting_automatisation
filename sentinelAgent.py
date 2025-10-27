@@ -1,20 +1,36 @@
 #!/usr/bin/python3
 
 import os, subprocess, psutil, socket, platform, json, logging, datetime
-from pathlib import Path
 
-REPORT_DIR = "reports"
-LOG_FILE_NAME = "sentinel_init.log"
-if not os.path.exists(REPORT_DIR):
-    os.makedirs(REPORT_DIR)
+if not os.path.exists("./reports"):
+    os.makedirs("./reports")
 
-LOG_PATH = Path(REPORT_DIR) / LOG_FILE_NAME
 logging.basicConfig(
-    filename=LOG_PATH,
-    #filename="./sentinel_init.log",
+    filename="./reports/sentinel_init.log",
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(name)s - %(message)s"
 )
+
+def identify_open_ports():
+    ports_list = []
+    Port = 0 #First port.
+    while Port <= 65535: #Port 65535 is last port you can access.
+        try:
+            try:
+                Socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0) #Create a socket.
+            except:
+                logging.error("Error: Can't open socket!")    
+                break #If can't open socket, exit the loop.
+            Socket.connect(("127.0.0.1", Port)) #Try connect the port. If port is not listening, throws ConnectionRefusedError. 
+            Connected = True
+        except ConnectionRefusedError:
+            Connected = False       
+        finally:
+            if(Connected and Port != Socket.getsockname()[1]): #If connected,
+                ports_list.append(Port) #Append port to list
+            Port = Port + 1 #Increase port.
+            Socket.close() #Close socket.
+    return ports_list
 
 def main():
     logging.info("Start audit")
@@ -35,46 +51,81 @@ def main():
     except:
         logging.warning("Error in getting memory informations")
 
-    print("IP Address : ", socket.gethostbyname(socket.gethostname()))
-    print("Network interfaces : ", psutil.net_if_addrs().keys())
+    try:
+        logging.info("Get network informations")
+        ip_address = socket.gethostbyname(socket.gethostname())
+        interfaces = list(psutil.net_if_addrs().keys())
+        open_ports = identify_open_ports()
+    except:
+        logging.warning("Error in getting network informations")
+
     # print("Open ports : ", subprocess.getoutput("ss -tulnp"))
 
-    print("Process Number : ", len(psutil.pids()))
+    try:
+        logging.info("Get process informations")
+        process_number = len(psutil.pids())
+    except:
+        logging.warning("Error in getting process informations")
 
 
     logging.info("End audit")
 
-    json_path = Path(REPORT_DIR) / "sentinel_report.json"
-    md_path = Path(REPORT_DIR) / "sentinel_report.md"
-    report_data = {
-        "hostname": hostname,
-        "os_name": os_name,
-        "os_version": os_version,
-        "cpu_usage": cpu_usage,
-        "ram_usage": ram_usage,
-        "disk_usage": disk_usage,
-        "timestamp": datetime.datetime.now().isoformat()
-    }
-
-    with open(json_path, "w") as report_file:
-        json.dump(report_data, report_file, indent=4)   
-
-    markdown_content = f"""# Rapport Sentinel de Surveillance
-    ## Informations Système
-    - **Nom d'hôte** : {hostname}   
-    - **Système d'exploitation** : {os_name}
-    - **Version du système d'exploitation** : {os_version}
-    ## Utilisation des Ressources
-    - **Utilisation du CPU** : {cpu_usage} %
-    - **Utilisation de la RAM** : {ram_usage} % 
-    - **Utilisation du Disque** : {disk_usage} %
-    ## Horodatage   
-    - **Généré le** : {datetime.datetime.now().isoformat()}
-    """
-
-    with open(md_path, "w") as md_file:
-        md_file.write(markdown_content)
     
+    try:
+        logging.info("Generation of the .json report")
+        report_data = {
+            "system" : {
+                "hostname"   : hostname,
+                "os_name"    : os_name,
+                "os_version" : os_version,
+            },
+            "memory" : {
+                "cpu_usage"  : cpu_usage,
+                "ram_usage"  : ram_usage,
+                "disk_usage" : disk_usage,
+            },
+            "network" : {
+                "ip_address" : ip_address,
+                "interfaces" : interfaces,
+                "open_ports" : open_ports,
+            },
+            "process" : {
+                "number" : process_number,
+            }
+        }
+
+        with open("reports/sentinel_report.json", "w", encoding='utf-8') as report_file:
+            json.dump(report_data, report_file, indent=4)
+        logging.info("File successfully generated")
+    except:
+        logging.warning("Error in creating the .json report")
+
+    try:
+        logging.info("Generation of the .md report")
+        markdown_content = f"""# Rapport Sentinel de Surveillance
+        ## Informations Système
+        - **Nom d'hôte** : {hostname}   
+        - **Système d'exploitation** : {os_name}
+        - **Version du système d'exploitation** : {os_version}
+        ## Utilisation des Ressources
+        - **Utilisation du CPU** : {cpu_usage} %
+        - **Utilisation de la RAM** : {ram_usage} % 
+        - **Utilisation du Disque** : {disk_usage} %
+        ## Informations Réseau
+        - **Adresse IP** : {ip_address}
+        - **Interfaces réseaux** : {interfaces}
+        - **Ports ouverts** : {open_ports}
+        ## Informations des Processus
+        - **Nombre de processus** : {process_number}
+        ## Horodatage   
+        - **Généré le** : {datetime.datetime.now().isoformat()}
+        """
+        
+        with open("reports/sentinel_report.md", "w", encoding='utf-8') as md_file:
+            md_file.write(markdown_content)
+        logging.info("File successfully generated")
+    except:
+        logging.warning("Error in creating the .md report")
 
     
 if __name__=="__main__":
