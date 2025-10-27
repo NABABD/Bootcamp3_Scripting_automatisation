@@ -32,7 +32,41 @@ def main():
     print("Network interfaces : ", psutil.net_if_addrs().keys())
     # print("Open ports : ", subprocess.getoutput("ss -tulnp"))
 
-    print("Process Number : ", )
+    print("Process Number : ", len(psutil.pids()))
 
+
+    logging.info("End audit")
+
+    report_data = {
+        "hostname": hostname,
+        "os_name": os_name,
+        "os_version": os_version,
+        "cpu_usage": cpu_usage,
+        "ram_usage": ram_usage,
+        "disk_usage": disk_usage,
+        "timestamp": datetime.datetime.now().isoformat()
+    }
+
+    with open("sentinel_report.json", "w") as report_file:
+        json.dump(report_data, report_file, indent=4)   
+
+    markdown_content = f"""# Rapport Sentinel de Surveillance
+    ## Informations Système
+    - **Nom d'hôte** : {hostname}   
+    - **Système d'exploitation** : {os_name}
+    - **Version du système d'exploitation** : {os_version}
+    ## Utilisation des Ressources
+    - **Utilisation du CPU** : {cpu_usage} %
+    - **Utilisation de la RAM** : {ram_usage} % 
+    - **Utilisation du Disque** : {disk_usage} %
+    ## Horodatage   
+    - **Généré le** : {datetime.datetime.now().isoformat()}
+    """
+    
+    with open(" sentinel_report.md", "w") as md_file:
+        md_file.write(markdown_content)
+    
+
+    
 if __name__=="__main__":
     main()
