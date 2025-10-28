@@ -2,11 +2,11 @@
 
 import os, subprocess, psutil, socket, platform, json, logging, datetime
 
-if not os.path.exists("./reports"):
-    os.makedirs("./reports")
+if not os.path.exists("/var/log/sentinel/central/"):
+    os.makedirs("/var/log/sentinel/central/")
 
 logging.basicConfig(
-    filename="./reports/sentinel_init.log",
+    filename="/var/log/sentinel/central/sentinel_init.log",
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(name)s - %(message)s"
 )
@@ -94,7 +94,7 @@ def main():
             }
         }
 
-        with open("reports/sentinel_report.json", "w", encoding='utf-8') as report_file:
+        with open("/var/log/sentinel/central/sentinel_report.json", "w", encoding='utf-8') as report_file:
             json.dump(report_data, report_file, indent=4)
         logging.info("File successfully generated")
     except:
@@ -121,7 +121,7 @@ def main():
         - **Généré le** : {datetime.datetime.now().isoformat()}
         """
         
-        with open("reports/sentinel_report.md", "w", encoding='utf-8') as md_file:
+        with open("/var/log/sentinel/central/sentinel_report.md", "w", encoding='utf-8') as md_file:
             md_file.write(markdown_content)
         logging.info("File successfully generated")
     except:
