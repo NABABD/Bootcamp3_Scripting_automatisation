@@ -1,0 +1,16 @@
+[Unit]
+Description=Nova Sentinel Agent
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /opt/sentinel/sentinel_agent.py
+Restart=always
+RestartSec=30
+User={{ ansible_user }}
+WorkingDirectory=/opt/sentinel
+StandardOutput=append:/var/log/sentinel/sentinel.log
+StandardError=append:/var/log/sentinel/sentinel.err
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target
