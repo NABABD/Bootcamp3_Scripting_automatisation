@@ -2,6 +2,8 @@
 
 import os, subprocess, psutil, socket, platform, json, logging, datetime
 
+if not os.path.exists("/var/log/sentinel/"):
+    os.makedirs("/var/log/sentinel/")
 if not os.path.exists("/var/log/sentinel/central/"):
     os.makedirs("/var/log/sentinel/central/")
 
