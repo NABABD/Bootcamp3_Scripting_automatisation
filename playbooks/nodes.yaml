@@ -4,10 +4,10 @@
   hosts: all
   become: yes  
   tasks:    
-  - name: Update system
-    ansible.builtin.apt:        
-      update_cache: yes        
-      upgrade: dist
+  # - name: Update system
+  #   ansible.builtin.apt:        
+  #     update_cache: yes        
+  #     upgrade: dist
   
   - name: Install python3 and python3-pip
     ansible.builtin.apt:
@@ -19,7 +19,8 @@
 
 
   - name: Ensure pip exists and get path
-    ansible.builtin.command: which pip3
+    ansible.builtin.command: 
+      cmd: which pip
     register: pip_path
     failed_when: false
     changed_when: false

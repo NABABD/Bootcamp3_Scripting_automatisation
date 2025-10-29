@@ -1,0 +1,17 @@
+---
+- name: Setup sentinel agent
+  hosts: applications
+  become: yes
+  tasks:
+  - name: Créer le répertoire Sentinel
+    file:
+      path: /opt/sentinel
+      state: directory
+      mode: '0755'
+
+  - name: Copier le script sentinel_agent.py
+    copy:
+      src: ~/Bootcamp3_Scripting_automatisation/files/sentinel_agent.py
+      dest: /opt/sentinel/sentinel_agent.py
+      mode: '0755'
+    
