@@ -1,0 +1,33 @@
+---
+
+- name: Sentinel update and configuration 
+  hosts: all
+  become: yes  
+  tasks:    
+  - name: Update system
+    ansible.builtin.apt:        
+      update_cache: yes        
+      upgrade: dist
+  
+  - name: Install python3 and python3-pip
+    ansible.builtin.apt:
+      name:
+        - "python3"
+        - "python3-pip"
+      state: present
+      install_recommends: no
+
+
+  - name: Ensure pip exists and get path
+    ansible.builtin.command: which pip3
+    register: pip_path
+    failed_when: false
+    changed_when: false
+
+  - name: Install psutil 
+    ansible.builtin.pip:
+      name: psutil
+      executable: "{{ pip_path.stdout | default('pip3') }}"
+      state: present
+
+# Python3, pip et psutil / ufw / Fail2ban
