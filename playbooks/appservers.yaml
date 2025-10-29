@@ -19,7 +19,7 @@
     file:
       path: /var/log/sentinel
       state: directory
-      mode: '0755'
+      mode: '0777'
 
 
   - name: Déployer le service systemd Sentinel
