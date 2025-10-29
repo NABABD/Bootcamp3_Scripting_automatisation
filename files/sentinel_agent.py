@@ -8,7 +8,7 @@ if not os.path.exists(REPORT_DIR):
     os.makedirs(REPORT_DIR)
 
 logging.basicConfig(
-    filename=REPORT_DIR+"reports/sentinel_init.log",
+    filename=REPORT_DIR+"sentinel_init.log",
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(name)s - %(message)s"
 )
