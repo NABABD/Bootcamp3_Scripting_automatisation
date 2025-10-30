@@ -10,35 +10,24 @@ terraform {
 resource "virtualbox_vm" "node" {
   count     = 2
   name      = format("node-%02d", count.index + 1)
-  image     = "https://app.vagrantup.com/ubuntu/boxes/bionic64/versions/20180903.0.0/providers/virtualbox.box"
-  cpus      = 2
-  memory    = "512 mib"
+  image     = "./ubuntu-15.04.tar.xz"
+  cpus      = 1
+  memory    = "256 mib"
 
   network_adapter {
     type           = "hostonly"
-    host_interface = "vboxnet1"
+    host_interface = "vboxnet0"
   }
 }
 
 resource "virtualbox_vm" "monitor" {
   name      = "monitor"
-  image     = "https://app.vagrantup.com/ubuntu/boxes/bionic64/versions/20180903.0.0/providers/virtualbox.box"
-  cpus      = 2
-  memory    = "512 mib"
+  image     = "./ubuntu-15.04.tar.xz"
+  cpus      = 1
+  memory    = "256 mib"
 
   network_adapter {
     type           = "hostonly"
-    host_interface = "vboxnet1"
+    host_interface = "vboxnet0"
   }
-}
-output "IPAddr_ndde_1" {
-  value = element(virtualbox_vm.node.*.network_adapter.0.ipv4_address, 1)
-}
-
-output "IPAddr_node_2" {
-  value = element(virtualbox_vm.node.*.network_adapter.0.ipv4_address, 2)
-}
-
-output "IPAddr_monitor" {
-  value = element(virtualbox_vm.monitor.*.network_adapter.0.ipv4_address, 2)
 }
