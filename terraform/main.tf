@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    virtualbox = {
+      source = "terra-farm/virtualbox"
+      version = "0.2.1"
+    }
+  }
+}
+
 resource "virtualbox_vm" "node" {
   count     = 2
   name      = format("node-%02d", count.index + 1)
@@ -23,4 +32,15 @@ resource "virtualbox_vm" "monitor" {
     type           = "hostonly"
     host_interface = "vboxnet1"
   }
+}
+output "IPAddr_ndde_1" {
+  value = element(virtualbox_vm.node.*.network_adapter.0.ipv4_address, 1)
+}
+
+output "IPAddr_node_2" {
+  value = element(virtualbox_vm.node.*.network_adapter.0.ipv4_address, 2)
+}
+
+output "IPAddr_monitor" {
+  value = element(virtualbox_vm.monitor.network_adapter.0.ipv4_address, 2)
 }
