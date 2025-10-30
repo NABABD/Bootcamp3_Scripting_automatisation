@@ -1,4 +1,4 @@
-output "IPAddr_n0de_1" {
+output "IPAddr_node_1" {
   value = element(virtualbox_vm.node.*.network_adapter.0.ipv4_address, 1)
 }
 
