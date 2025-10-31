@@ -1,0 +1,16 @@
+---
+- name: Deploy HashiCorp Vault
+  hosts: monitoring
+  become: yes
+  tasks:
+    - name: Install Vault
+      apt:
+        name: vault
+        state: present
+
+    - name: Start Vault service
+      service:
+        name: vault
+        state: started
+        enabled: yes
+

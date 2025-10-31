@@ -1,7 +1,7 @@
 import sys
 
 def generate_hosts_file(node_ips, monitor_ip):
-    hosts_file = "~/nova-sentinel-infra/ansible/inventory/hosts.ini"
+    hosts_file = "/home/admin/nova-sentinel-infra/ansible/inventory/hosts.ini"
     
     with open(hosts_file, 'w') as f:
         f.write("[applications]\n")
@@ -13,7 +13,7 @@ def generate_hosts_file(node_ips, monitor_ip):
         
         f.write("\n[all:vars]\n")
         f.write('ansible_user="ubuntu"\n')
-        f.write('ansible_port=22\n')
+        f.write('ansible_port=2222\n')
         f.write('ansible_ssh_private_key_file="~/.ssh/id_ed25519"\n')
 
 if __name__ == "__main__":

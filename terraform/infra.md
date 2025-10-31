@@ -89,7 +89,7 @@ Le bastion peut bien les atteindre en SSH et aucune machine inutile n'a été g�
 
 En cas de lancement de la commande 
 
-``` terraform apply```
+``` terraform apply ```
 
 Le fichier `generate_hosts.py` va modifier le fichier hosts.ini et ansible va lancer les playbooks.
 

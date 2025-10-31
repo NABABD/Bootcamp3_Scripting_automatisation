@@ -26,7 +26,7 @@ sudo service ssh start
 
 # Basic SSH configuration
 sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config_backup   # Backup the original configuration file
-sudo sed -i 's/#Port 22/Port 22/' /etc/ssh/sshd_config      # Set the listening port to 22
+sudo sed -i 's/#Port 22/Port 2222/' /etc/ssh/sshd_config      # Set the listening port to 22
 sudo sed -i 's/PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config   # Disable root login
 sudo sed -i 's/PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config   # Enable password authentication
 
