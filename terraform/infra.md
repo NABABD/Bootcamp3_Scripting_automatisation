@@ -62,3 +62,35 @@ Le code est bien indenté, cohérent et un output est présent.
 Les ressources vont être crées dans le bon ordre, d'abord les nodes (App et monitoring indifféremment).
 
 ## 4. Créer les machines
+
+Les machines apparaissent bien sur VirtualBox et leurs IPs sont notées. :
+<table>
+ <tr>
+  <th>Nom</th>
+  <th>IP</th>
+</tr>
+ <tr>
+  <td>node-01</td>
+  <td>192.168.56.102</td>
+</tr>
+ <tr>
+  <td>node-02</td>
+  <td>192.168.56.104</td>
+</tr>
+ <tr>
+  <td>monitor</td>
+  <td>192.168.56.103</td>
+</tr>
+</table>
+
+Le bastion peut bien les atteindre en SSH et aucune machine inutile n'a été générée.
+
+## 5. Intégrer Terraform et Ansible
+
+En cas de lancement de la commande 
+
+``` terraform apply```
+
+Le fichier `generate_hosts.py` va modifier le fichier hosts.ini et ansible va lancer les playbooks.
+
+Le tout fonctionne correctement.

@@ -11,7 +11,7 @@
 
   - name: Copier le script sentinel_agent.py
     copy:
-      src: ~/nova-sentinel-infra/files/sentinel_agent.py
+      src: ~/nova-sentinel-infra/ansible/files/sentinel_agent.py
       dest: /opt/sentinel/sentinel_agent.py
       mode: '0755'
 
@@ -24,7 +24,7 @@
 
   - name: Déployer le service systemd Sentinel
     template:
-      src: ~/nova-sentinel-infra/templates/sentinel.service.j2
+      src: ~/nova-sentinel-infra/ansible/templates/sentinel.service.j2
       dest: /etc/systemd/system/sentinel.service
 
 
