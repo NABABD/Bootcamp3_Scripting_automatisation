@@ -1,7 +1,7 @@
 import sys
 
 def generate_hosts_file(node_ips, monitor_ip):
-    hosts_file = "/home/admin/nova-sentinel-infra/ansible/inventory/hosts.ini"
+    hosts_file = "~/nova-sentinel-infra/ansible/inventory/hosts.ini"
     
     with open(hosts_file, 'w') as f:
         f.write("[applications]\n")
