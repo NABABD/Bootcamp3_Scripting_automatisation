@@ -1,3 +1,4 @@
+# Declare VirtualBox provider
 terraform {
   required_providers {
     virtualbox = {
@@ -7,6 +8,7 @@ terraform {
   }
 }
 
+# Declare App nodes VMs
 resource "virtualbox_vm" "node" {
   count     = 2
   name      = format("node-%02d", count.index + 1)
@@ -20,6 +22,7 @@ resource "virtualbox_vm" "node" {
   }
 }
 
+# Declare Monitoring node VM
 resource "virtualbox_vm" "monitor" {
   name      = "monitor"
   image     = "./ubuntu-15.04.tar.xz"
