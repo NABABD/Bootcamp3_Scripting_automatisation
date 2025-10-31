@@ -20,6 +20,10 @@ resource "virtualbox_vm" "node" {
     type           = "hostonly"
     host_interface = "vboxnet0"
   }
+
+  network_adapter {
+    type           = "nat"
+  }
 }
 
 # Declare Monitoring node VM
@@ -32,5 +36,9 @@ resource "virtualbox_vm" "monitor" {
   network_adapter {
     type           = "hostonly"
     host_interface = "vboxnet0"
+  }
+
+  network_adapter {
+    type           = "nat"
   }
 }
